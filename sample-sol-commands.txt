@@ -1,0 +1,4 @@
+bin/stormbench -storm ~/storm-dal/bin/storm  -jar ./target/storm-bench.tsol.jar  -conf ./conf/sol.yaml -c topology.workers=1 -c component.spout_num=16 -c component.bolt_num=32 -c topology.acker.executors=128 storm.benchmark.tools.Runner storm.benchmark.benchmarks.SOL;  st kill SOL 1>/dev/null;
+
+
+the TSOL topolgy was an attempt to do SOL under Trident. It doesnt work currently. metrics indicate the spout is emiting any events.

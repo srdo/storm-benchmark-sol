@@ -24,6 +24,7 @@ import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.TopologyBuilder;
 import com.google.common.collect.Sets;
 import storm.benchmark.lib.bolt.ConstBolt;
+import storm.benchmark.lib.bolt.ConstBolt2;
 import storm.benchmark.lib.spout.RandomMessageSpout;
 import storm.benchmark.metrics.BasicMetricsCollector;
 import storm.benchmark.metrics.IMetricsCollector;
@@ -62,11 +63,13 @@ public class SOL extends StormBenchmark {
     TopologyBuilder builder = new TopologyBuilder();
 
     builder.setSpout(SPOUT_ID, spout, spoutNum);
-    builder.setBolt(BOLT_ID + 1, new ConstBolt(), boltNum)
+    boolean ack = BenchmarkUtils.ifAckEnabled(config) && (numLevels>1);
+    builder.setBolt(BOLT_ID + 1, new ConstBolt2( ack ), boltNum)
         .shuffleGrouping(SPOUT_ID);
     for (int levelNum = 2; levelNum <= numLevels - 1; levelNum++) {
-      builder.setBolt(BOLT_ID + levelNum, new ConstBolt(), boltNum)
-        .shuffleGrouping(BOLT_ID + (levelNum - 1));
+      ack =  BenchmarkUtils.ifAckEnabled(config) &&  (levelNum < numLevels - 1);
+      builder.setBolt(BOLT_ID + levelNum, new ConstBolt2(ack), boltNum)
+              .shuffleGrouping(BOLT_ID + (levelNum - 1));
     }
    return builder.createTopology();
   }

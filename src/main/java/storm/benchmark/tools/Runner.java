@@ -90,7 +90,11 @@ public class Runner {
     config.putAll(Utils.readStormConfig());
     String name = (String) config.get(Config.TOPOLOGY_NAME);
     topology = app.getTopology(config);
-    StormSubmitter.submitTopology(name, config, topology);
+    try {
+      StormSubmitter.submitTopology(name, config, topology);
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private static boolean isMetricsEnabled() {

@@ -51,7 +51,8 @@ public class StormBenchmarkTest {
             { new RollingCount(), BasicMetricsCollector.class },
             { new Grep(), BasicMetricsCollector.class },
             { new DRPC(), DRPCMetricsCollector.class },
-            { new TridentWordCount(), BasicMetricsCollector.class },
+            { new SOLHBase(), BasicMetricsCollector.class },
+//            { new TridentWordCount(), BasicMetricsCollector.class },
             { new PageViewCount(), BasicMetricsCollector.class },
             { new UniqueVisitor(), BasicMetricsCollector.class },
             { new DataClean(), BasicMetricsCollector.class }

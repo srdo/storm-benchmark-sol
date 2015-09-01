@@ -64,6 +64,10 @@ public final class BenchmarkUtils {
     return Utils.getInt(Utils.get(map, key, def));
   }
 
+  public static String getStr(Map map, Object key) {
+    return (String) map.get(key);
+  }
+
   public static boolean ifAckEnabled(Config config) {
     Object ackers = config.get(Config.TOPOLOGY_ACKER_EXECUTORS);
     if (null == ackers) {

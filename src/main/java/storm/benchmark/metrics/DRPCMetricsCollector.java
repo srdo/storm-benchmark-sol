@@ -102,14 +102,15 @@ public class DRPCMetricsCollector implements IMetricsCollector {
   }
 
   private long execute(String arg, PrintWriter writer) throws TException, DRPCExecutionException {
-    LOG.debug(String.format("executing %s('%s')", function, arg));
-    DRPCClient client = new DRPCClient(server, port);
-    long start = System.currentTimeMillis();
-    String result = client.execute(function, arg);
-    long end = System.currentTimeMillis();
-    long latency = end - start;
-    writer.println(String.format("%s('%s') = %s, latency = %d ms", function, arg, result, latency));
-    writer.flush();
-    return latency;
+//    LOG.debug(String.format("executing %s('%s')", function, arg));
+//    DRPCClient client = new DRPCClient(server, port);
+//    long start = System.currentTimeMillis();
+//    String result = client.execute(function, arg);
+//    long end = System.currentTimeMillis();
+//    long latency = end - start;
+//    writer.println(String.format("%s('%s') = %s, latency = %d ms", function, arg, result, latency));
+//    writer.flush();
+//    return latency;
+    return 0;
   }
 }
