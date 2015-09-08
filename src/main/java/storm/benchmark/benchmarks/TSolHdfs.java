@@ -63,7 +63,8 @@ public class TSolHdfs  extends StormBenchmark {
     final String topic = BenchmarkUtils.getStr(config, KAFKA_TOPIC);
 
     // 1 -  Setup Trident Kafka Spout   --------
-    String zkConnString = "cn108-10.l42scl.hortonworks.com:2181";
+    String zkConnString = BenchmarkUtils.getStr(config, "storm.zookeeper.servers");
+    String topicName = BenchmarkUtils.getStr(config, "kafka.topic");
 
     BrokerHosts zk = new ZkHosts(zkConnString);
     TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk, topic);
