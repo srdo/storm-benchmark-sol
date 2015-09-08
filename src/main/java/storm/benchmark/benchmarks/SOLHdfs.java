@@ -84,12 +84,13 @@ public class SOLHdfs extends StormBenchmark {
 
     final int syncCount = BenchmarkUtils.getInt(config, "syncCount", 10000);
 
+
     kafka.api.OffsetRequest.EarliestTime();
 
 
     // 1 -  Setup Kafka Spout   --------
-    String zkConnString = "cn108-10.l42scl.hortonworks.com:2181";
-    String topicName = "parts_4_100b";
+    String zkConnString = BenchmarkUtils.getStrArray(config, "storm.zookeeper.servers")[0];
+    String topicName = BenchmarkUtils.getStr(config, "kafka.topic");
 
     BrokerHosts hosts = new ZkHosts(zkConnString);
     SpoutConfig spoutConfig = new SpoutConfig(hosts, topicName, "/" + topicName, UUID.randomUUID().toString());
@@ -99,18 +100,18 @@ public class SOLHdfs extends StormBenchmark {
     spout = new KafkaSpout(spoutConfig);
 
     // 2 -  Setup HFS Bolt   --------
-
+    String namenode = BenchmarkUtils.getStr(config, "hdfs.namenode");
     RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter(",");
     SyncPolicy syncPolicy = new CountSyncPolicy(syncCount);
     FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(1.0f, FileSizeRotationPolicy.Units.GB);
 
     // Use default, Storm-generated file names
     long now = System.currentTimeMillis();
-    FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/user/roshann/stormperf/" + now);
+    FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/tmp/stormperf/" + now);
 
     // Instantiate the HdfsBolt
     HdfsBolt bolt = new HdfsBolt()
-            .withFsUrl("hdfs://cn108-10.l42scl.hortonworks.com:8020")
+            .withFsUrl(namenode)
             .withFileNameFormat(fileNameFormat)
             .withRecordFormat(format)
             .withRotationPolicy(rotationPolicy)
