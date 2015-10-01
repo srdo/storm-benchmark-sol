@@ -40,7 +40,7 @@ public class TSolHdfs  extends StormBenchmark {
   public static final String BOLT_ID = "bolt";
   public static final String BOLT_NUM = "component.bolt_num";
   public static final String BATCH_SIZE = "batch.size";
-  public static final String KAFKA_TOPIC = "kafka.topic";
+  // public static final String KAFKA_TOPIC = "kafka.topic";
 
   public static final int DEFAULT_SPOUT_NUM = 4;
   public static final int DEFAULT_BOLT_NUM = 4;
@@ -60,14 +60,20 @@ public class TSolHdfs  extends StormBenchmark {
 
     final int batchSize = BenchmarkUtils.getInt(config, BATCH_SIZE, DEFAULT_BATCH_SIZE);
     final int shuffle = BenchmarkUtils.getInt(config, SHUFFLE, DEFAULT_SHUFFLE);
-    final String topic = BenchmarkUtils.getStr(config, KAFKA_TOPIC);
+    // final String topic = BenchmarkUtils.getStr(config, KAFKA_TOPIC);
 
     // 1 -  Setup Trident Kafka Spout   --------
-    String zkConnString = BenchmarkUtils.getStr(config, "storm.zookeeper.servers");
+    
+    String zkHost = BenchmarkUtils.getStr(config, "zookeeper.host");
+    String zkConnString = zkHost + ":2181";
+    //String zkConnString = "cn069.l42scl.hortonworks.com:2181";
     String topicName = BenchmarkUtils.getStr(config, "kafka.topic");
+    // String topicName = "parts_4_100b";
+    
+    String namenode_host = BenchmarkUtils.getStr(config, "hdfs_namenode.host");
 
     BrokerHosts zk = new ZkHosts(zkConnString);
-    TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk, topic);
+    TridentKafkaConfig spoutConf = new TridentKafkaConfig(zk, topicName);
     spoutConf.scheme = new SimpleHFSScheme();
     spoutConf.ignoreZkOffsets = true;
     spoutConf.fetchSizeBytes = batchSize;
@@ -80,21 +86,29 @@ public class TSolHdfs  extends StormBenchmark {
     FileNameFormat fileNameFormat = new DefaultFileNameFormat()
             .withPrefix("trident")
             .withExtension(".txt")
-            .withPath("/user/roshann/stormperf/");
+            .withPath("/tmp/stormperf/");
 
     RecordFormat recordFormat = new DelimitedRecordFormat()
             .withFields(hdfsFields);
 
     FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(500.0f, FileSizeRotationPolicy.Units.MB);
 
+    String Hdfs_url = "hdfs://" + namenode_host + ":8020";
+
+    //HdfsState.Options options = new HdfsState.HdfsFileOptions()
+    //        .withFileNameFormat(fileNameFormat)
+    //        .withRecordFormat(recordFormat)
+    //        .withRotationPolicy(rotationPolicy)
+    //        .withFsUrl("hdfs://cn069.l42scl.hortonworks.com:8020");
+    
     HdfsState.Options options = new HdfsState.HdfsFileOptions()
             .withFileNameFormat(fileNameFormat)
             .withRecordFormat(recordFormat)
             .withRotationPolicy(rotationPolicy)
-            .withFsUrl("hdfs://cn108-10.l42scl.hortonworks.com:8020");
+            .withFsUrl(Hdfs_url);	    
+
 
     StateFactory factory = new HdfsStateFactory().withOptions(options);
-
 
 
     // 3 - Setup Topology  --------
@@ -120,9 +134,7 @@ public class TSolHdfs  extends StormBenchmark {
     return new BasicMetricsCollector(config, topology,
             Sets.newHashSet(IMetricsCollector.MetricsItem.ALL));
   }
-
 }
-
 
 
 class SimpleHFSScheme implements MultiScheme {
