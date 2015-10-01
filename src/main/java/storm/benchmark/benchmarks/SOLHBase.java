@@ -77,8 +77,15 @@ public class SOLHBase extends StormBenchmark {
 
     // 1 -  Setup Spout   --------
 
-    String zkConnString = "cn108-10.l42scl.hortonworks.com:2181";
-    String topicName = "parts_4_100b";
+    String zkHost = BenchmarkUtils.getStr(config, "zookeeper.host");
+    String zkConnString = zkHost + ":2181";
+    //String zkConnString = "cn069.l42scl.hortonworks.com:2181";
+    String topicName = BenchmarkUtils.getStr(config, "kafka.topic");
+    // String topicName = "parts_4_100b";
+    String hbase_table  = BenchmarkUtils.getStr(config, "hbase_table.name");
+    String hbase_table_column = BenchmarkUtils.getStr(config, "hbase_table_column.name");	
+    String namenode_host = BenchmarkUtils.getStr(config, "hdfs_namenode.host"); 
+    String zookeeper_znode_parent = BenchmarkUtils.getStr(config, "zookeeper.znode.parent");
 
     BrokerHosts hosts = new ZkHosts(zkConnString);
     SpoutConfig spoutConfig = new SpoutConfig(hosts, topicName, "/" + topicName, UUID.randomUUID().toString());
@@ -88,18 +95,29 @@ public class SOLHBase extends StormBenchmark {
     spout = new KafkaSpout(spoutConfig);
 
     // 2 -  Setup Bolt   --------
+    //SimpleHBaseMapper mapper = new SimpleHBaseMapper()
+    //        .withRowKeyField(FIELD1_NAME)
+    //        .withColumnFields(new Fields(FIELD2_NAME))
+    //        .withColumnFamily("cf1");
+
     SimpleHBaseMapper mapper = new SimpleHBaseMapper()
             .withRowKeyField(FIELD1_NAME)
             .withColumnFields(new Fields(FIELD2_NAME))
-            .withColumnFamily("cf1");
+            .withColumnFamily(hbase_table_column);
 
-    HBaseBolt hbolt = new HBaseBolt("stormperf", mapper)
+    //HBaseBolt hbolt = new HBaseBolt("stormperf", mapper)
+    //                         .withConfigKey("hbase.conf");
+
+    HBaseBolt hbolt = new HBaseBolt(hbase_table, mapper)
                              .withConfigKey("hbase.conf");
 
+    String hbase_root_dir_value = "hdfs://" + namenode_host + ":8020/apps/hbase/data";
+    
     Map<String, Object> hbConf = new HashMap<String, Object>();
-    hbConf.put("hbase.rootdir", "hdfs://cn108-10.l42scl.hortonworks.com:8020/apps/hbase/data");
+    hbConf.put("hbase.rootdir", hbase_root_dir_value);
     hbConf.put("hbase.zookeeper.property.clientPort", "2181");
-    hbConf.put("hbase.zookeeper.quorum","cn106-10.l42scl.hortonworks.com,cn107-10.l42scl.hortonworks.com,cn108-10.l42scl.hortonworks.com");
+    hbConf.put("hbase.zookeeper.quorum",zkHost);
+    hbConf.put("zookeeper.znode.parent", zookeeper_znode_parent);
     hbConf.put("hbase.zookeeper.useMulti","true");
 
     config.put("hbase.conf", hbConf);
