@@ -84,13 +84,16 @@ public class SOLHdfs extends StormBenchmark {
 
     final int syncCount = BenchmarkUtils.getInt(config, "syncCount", 10000);
 
-
     kafka.api.OffsetRequest.EarliestTime();
 
 
     // 1 -  Setup Kafka Spout   --------
-    String zkConnString = BenchmarkUtils.getStrArray(config, "storm.zookeeper.servers")[0];
+    String zkHost = BenchmarkUtils.getStr(config, "zookeeper.host");
+    String zkConnString = zkHost + ":2181";
+    //String zkConnString = "cn069.l42scl.hortonworks.com:2181";
+    // String topicName = "parts_1_100b";
     String topicName = BenchmarkUtils.getStr(config, "kafka.topic");
+    String namenode_host = BenchmarkUtils.getStr(config, "hdfs_namenode.host");
 
     BrokerHosts hosts = new ZkHosts(zkConnString);
     SpoutConfig spoutConfig = new SpoutConfig(hosts, topicName, "/" + topicName, UUID.randomUUID().toString());
@@ -100,7 +103,7 @@ public class SOLHdfs extends StormBenchmark {
     spout = new KafkaSpout(spoutConfig);
 
     // 2 -  Setup HFS Bolt   --------
-    String namenode = BenchmarkUtils.getStr(config, "hdfs.namenode");
+
     RecordFormat format = new DelimitedRecordFormat().withFieldDelimiter(",");
     SyncPolicy syncPolicy = new CountSyncPolicy(syncCount);
     FileRotationPolicy rotationPolicy = new FileSizeRotationPolicy(1.0f, FileSizeRotationPolicy.Units.GB);
@@ -108,14 +111,23 @@ public class SOLHdfs extends StormBenchmark {
     // Use default, Storm-generated file names
     long now = System.currentTimeMillis();
     FileNameFormat fileNameFormat = new DefaultFileNameFormat().withPath("/tmp/stormperf/" + now);
+   
+    String Hdfs_url = "hdfs://" + namenode_host + ":8020";
 
     // Instantiate the HdfsBolt
     HdfsBolt bolt = new HdfsBolt()
-            .withFsUrl(namenode)
+            .withFsUrl(Hdfs_url)
             .withFileNameFormat(fileNameFormat)
             .withRecordFormat(format)
             .withRotationPolicy(rotationPolicy)
             .withSyncPolicy(syncPolicy);
+  
+    //HdfsBolt bolt = new HdfsBolt()
+    //        .withFsUrl("hdfs://cn069.l42scl.hortonworks.com:8020")
+    //        .withFileNameFormat(fileNameFormat)
+    //        .withRecordFormat(format)
+    //        .withRotationPolicy(rotationPolicy)
+    //        .withSyncPolicy(syncPolicy);
 
 
 
