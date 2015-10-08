@@ -103,7 +103,7 @@ public class TSolHBase  extends StormBenchmark {
             .withConfigKey("hbase.conf")
             .withDurability(Durability.SYNC_WAL)
             .withMapper(hbaseMapper)
-            .withTableName("stormperf");
+            .withTableName(hbase_table);
 
     StateFactory factory = new HBaseStateFactory(options);
 
