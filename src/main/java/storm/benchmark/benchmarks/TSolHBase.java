@@ -110,19 +110,18 @@ public class TSolHBase  extends StormBenchmark {
 
 
     // 3 - Setup Topology  --------
-    TridentTopology trident = new TridentTopology();
 
-
-    Stream strm = trident.newStream("spout", kspout).parallelismHint(spoutNum);
-
-    if(shuffle!=0) {
-      strm.shuffle();
+   TridentTopology trident = new TridentTopology();
+   Stream strm = trident.newStream("spout", kspout);
+   
+   if(shuffle!=0) {
+        strm.parallelismHint(spoutNum).shuffle().partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HBaseUpdater(), new Fields()).parallelismHint(boltNum);
     } else {
-      boltNum = spoutNum; //override if not shuffling
+        strm.parallelismHint(spoutNum).shuffle().partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HBaseUpdater(), new Fields()).parallelismHint(spoutNum);
     }
 
-    strm.partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HBaseUpdater(), new Fields())
-          .parallelismHint(boltNum);
+    //strm.partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HBaseUpdater(), new Fields())
+    //      .parallelismHint(boltNum);
 
     return trident.build();
   }
