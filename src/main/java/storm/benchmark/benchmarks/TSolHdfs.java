@@ -45,7 +45,6 @@ public class TSolHdfs  extends StormBenchmark {
   public static final int DEFAULT_SPOUT_NUM = 4;
   public static final int DEFAULT_BOLT_NUM = 4;
   public static final int DEFAULT_BATCH_SIZE = 100;
-
   private static final String FIELD1_NAME = "id";
   private static final String FIELD2_NAME = "bytes";
 
@@ -61,7 +60,6 @@ public class TSolHdfs  extends StormBenchmark {
     final int batchSize = BenchmarkUtils.getInt(config, BATCH_SIZE, DEFAULT_BATCH_SIZE);
     final int shuffle = BenchmarkUtils.getInt(config, SHUFFLE, DEFAULT_SHUFFLE);
     // final String topic = BenchmarkUtils.getStr(config, KAFKA_TOPIC);
-
     // 1 -  Setup Trident Kafka Spout   --------
     
     String zkHost = BenchmarkUtils.getStr(config, "zookeeper.host");
@@ -114,18 +112,16 @@ public class TSolHdfs  extends StormBenchmark {
     // 3 - Setup Topology  --------
     TridentTopology trident = new TridentTopology();
 
-    Stream strm = trident.newStream("spout", kspout)
-            .parallelismHint(spoutNum);
+    Stream strm = trident.newStream("spout", kspout);
 
     if(shuffle!=0) {
-      strm.shuffle();
+	strm.parallelismHint(spoutNum).shuffle().partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HdfsUpdater(), new Fields()).parallelismHint(boltNum);
     } else {
-      boltNum = spoutNum; //override if not shuffling
+	strm.parallelismHint(spoutNum).shuffle().partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HdfsUpdater(), new Fields()).parallelismHint(spoutNum);
     }
-
-    strm.partitionPersist(factory, new Fields(FIELD1_NAME, FIELD2_NAME), new HdfsUpdater(), new Fields());
-    strm.parallelismHint(boltNum);
-
+     
+    
+    //strm.parallelismHint(boltNum);
     return trident.build();
   }
 
