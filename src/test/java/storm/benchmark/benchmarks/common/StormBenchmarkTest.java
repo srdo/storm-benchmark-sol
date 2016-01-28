@@ -18,8 +18,8 @@
 
 package storm.benchmark.benchmarks.common;
 
-import backtype.storm.Config;
-import backtype.storm.generated.StormTopology;
+import org.apache.storm.Config;
+import org.apache.storm.generated.StormTopology;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import storm.benchmark.benchmarks.*;

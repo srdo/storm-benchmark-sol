@@ -18,12 +18,12 @@
 
 package storm.benchmark.benchmarks;
 
-import backtype.storm.Config;
-import backtype.storm.generated.StormTopology;
-import backtype.storm.spout.MultiScheme;
-import backtype.storm.topology.IRichSpout;
-import backtype.storm.topology.TopologyBuilder;
-import backtype.storm.tuple.Fields;
+import org.apache.storm.Config;
+import org.apache.storm.generated.StormTopology;
+import org.apache.storm.spout.MultiScheme;
+import org.apache.storm.topology.IRichSpout;
+import org.apache.storm.topology.TopologyBuilder;
+import org.apache.storm.tuple.Fields;
 import com.google.common.collect.Sets;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -33,12 +33,13 @@ import storm.benchmark.metrics.IMetricsCollector;
 import storm.benchmark.benchmarks.common.StormBenchmark;
 import storm.benchmark.util.BenchmarkUtils;
 import org.apache.storm.hbase.bolt.*;
-import storm.kafka.BrokerHosts;
-import storm.kafka.KafkaSpout;
-import storm.kafka.SpoutConfig;
-import storm.kafka.ZkHosts;
+import org.apache.storm.kafka.BrokerHosts;
+import org.apache.storm.kafka.KafkaSpout;
+import org.apache.storm.kafka.SpoutConfig;
+import org.apache.storm.kafka.ZkHosts;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,9 +142,9 @@ public class SOLHBase extends StormBenchmark {
 
 class SimpleScheme implements MultiScheme {
 
-  public Iterable<List<Object>> deserialize(byte[] bytes)  {
+  public Iterable<List<Object>> deserialize(ByteBuffer bytes)  {
     ArrayList<List<Object>> res = new ArrayList(1);
-    res.add(tuple(UUID.randomUUID().toString(), deserializeString(bytes)) );
+    res.add(tuple(UUID.randomUUID().toString(), deserializeString(bytes.array())) );
     return res;
   }
 

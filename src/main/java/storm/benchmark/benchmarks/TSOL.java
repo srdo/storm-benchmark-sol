@@ -18,11 +18,11 @@
 
 package storm.benchmark.benchmarks;
 
-import backtype.storm.Config;
-import backtype.storm.generated.StormTopology;
+import org.apache.storm.Config;
+import org.apache.storm.generated.StormTopology;
 
-import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Values;
+import org.apache.storm.tuple.Fields;
+import org.apache.storm.tuple.Values;
 import com.google.common.collect.Sets;
 import storm.benchmark.lib.spout.RandomMessageSpout;
 import storm.benchmark.metrics.BasicMetricsCollector;
@@ -30,8 +30,8 @@ import storm.benchmark.metrics.IMetricsCollector;
 import storm.benchmark.benchmarks.common.StormBenchmark;
 import storm.benchmark.util.BenchmarkUtils;
 
-import storm.trident.TridentTopology;
-import storm.trident.operation.TridentCollector;
+import org.apache.storm.trident.TridentTopology;
+import org.apache.storm.trident.operation.TridentCollector;
 
 
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ import java.util.Map;
 import java.util.Random;
 
 
-import storm.trident.spout.IBatchSpout;
-import backtype.storm.task.TopologyContext;
+import org.apache.storm.trident.spout.IBatchSpout;
+import org.apache.storm.task.TopologyContext;
 
 import static storm.benchmark.metrics.IMetricsCollector.MetricsItem;
 

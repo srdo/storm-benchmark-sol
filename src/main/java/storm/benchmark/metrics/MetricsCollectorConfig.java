@@ -18,8 +18,8 @@
 
 package storm.benchmark.metrics;
 
-import backtype.storm.Config;
-import backtype.storm.utils.Utils;
+import org.apache.storm.Config;
+import org.apache.storm.utils.Utils;
 import org.apache.log4j.Logger;
 import storm.benchmark.benchmarks.common.StormBenchmark;
 import storm.benchmark.util.BenchmarkUtils;

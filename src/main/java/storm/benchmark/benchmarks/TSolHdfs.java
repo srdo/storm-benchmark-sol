@@ -1,9 +1,9 @@
 package storm.benchmark.benchmarks;
 
-import backtype.storm.Config;
-import backtype.storm.generated.StormTopology;
-import backtype.storm.spout.MultiScheme;
-import backtype.storm.tuple.Fields;
+import org.apache.storm.Config;
+import org.apache.storm.generated.StormTopology;
+import org.apache.storm.spout.MultiScheme;
+import org.apache.storm.tuple.Fields;
 import com.google.common.collect.Sets;
 import org.apache.storm.hdfs.trident.HdfsState;
 import org.apache.storm.hdfs.trident.HdfsStateFactory;
@@ -19,15 +19,16 @@ import storm.benchmark.lib.spout.RandomMessageSpout;
 import storm.benchmark.metrics.BasicMetricsCollector;
 import storm.benchmark.metrics.IMetricsCollector;
 import storm.benchmark.util.BenchmarkUtils;
-import storm.kafka.BrokerHosts;
-import storm.kafka.ZkHosts;
-import storm.kafka.trident.OpaqueTridentKafkaSpout;
-import storm.kafka.trident.TridentKafkaConfig;
-import storm.trident.Stream;
-import storm.trident.TridentTopology;
-import storm.trident.state.StateFactory;
+import org.apache.storm.kafka.BrokerHosts;
+import org.apache.storm.kafka.ZkHosts;
+import org.apache.storm.kafka.trident.OpaqueTridentKafkaSpout;
+import org.apache.storm.kafka.trident.TridentKafkaConfig;
+import org.apache.storm.trident.Stream;
+import org.apache.storm.trident.TridentTopology;
+import org.apache.storm.trident.state.StateFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class TSolHdfs  extends StormBenchmark {
   public static final String BOLT_ID = "bolt";
   public static final String BOLT_NUM = "component.bolt_num";
   public static final String BATCH_SIZE = "batch.size";
-  // public static final String KAFKA_TOPIC = "kafka.topic";
+//   public static final String KAFKA_TOPIC = "kafka.topic";
 
   public static final int DEFAULT_SPOUT_NUM = 4;
   public static final int DEFAULT_BOLT_NUM = 4;
@@ -135,9 +136,9 @@ public class TSolHdfs  extends StormBenchmark {
 
 class SimpleHFSScheme implements MultiScheme {
 
-  public Iterable<List<Object>> deserialize(byte[] bytes)  {
+  public Iterable<List<Object>> deserialize(ByteBuffer bytes)  {
     ArrayList<List<Object>> res = new ArrayList(1);
-    res.add(tuple(UUID.randomUUID().toString(), deserializeString(bytes)) );
+    res.add(tuple(UUID.randomUUID().toString(), deserializeString(bytes.array())) );
     return res;
   }
 

@@ -27,7 +27,8 @@
   <name>storm-benchmark</name>
 
   <properties>
-    <storm.version>0.10.0-beta1</storm.version>
+    <storm.version>1.0.0-SNAPSHOT</storm.version>
+    <curator.version>2.9.0</curator.version>
   </properties>
   <dependencies>
     <dependency>
@@ -63,7 +64,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka_2.9.2</artifactId>
+      <artifactId>kafka_2.10</artifactId>
       <version>0.8.2.1</version>
       <exclusions>
         <exclusion>
@@ -105,7 +106,16 @@
       <version>2.0M10</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+      <version>${curator.version}</version>
+    </dependency>
     <!--<dependency>-->
       <!--<groupId>org.anarres.lzo</groupId>-->
       <!--<artifactId>lzo-hadoop</artifactId>-->

@@ -18,11 +18,11 @@
 
 package storm.benchmark.lib.spout;
 
-import backtype.storm.tuple.Values;
+import org.apache.storm.tuple.Values;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import storm.benchmark.tools.FileReader;
-import storm.trident.operation.TridentCollector;
+import org.apache.storm.trident.operation.TridentCollector;
 
 import java.util.List;
 import java.util.Map;

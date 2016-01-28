@@ -25,12 +25,12 @@ package storm.benchmark.metrics;
  * receiving the result
  */
 
-import backtype.storm.Config;
-import backtype.storm.generated.DRPCExecutionException;
-import backtype.storm.generated.StormTopology;
-import backtype.storm.utils.DRPCClient;
+import org.apache.storm.Config;
+import org.apache.storm.generated.DRPCExecutionException;
+import org.apache.storm.generated.StormTopology;
+import org.apache.storm.utils.DRPCClient;
 import org.apache.log4j.Logger;
-import org.apache.thrift7.TException;
+import org.apache.storm.thrift.TException;
 import storm.benchmark.util.FileUtils;
 
 import java.io.PrintWriter;

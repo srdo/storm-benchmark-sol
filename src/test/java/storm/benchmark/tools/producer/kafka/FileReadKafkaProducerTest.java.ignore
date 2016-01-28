@@ -18,10 +18,10 @@
 
 package storm.benchmark.tools.producer.kafka;
 
-import backtype.storm.Config;
-import backtype.storm.spout.SpoutOutputCollector;
-import backtype.storm.task.TopologyContext;
-import backtype.storm.tuple.Values;
+import org.apache.storm.Config;
+import org.apache.storm.spout.SpoutOutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.tuple.Values;
 import org.testng.annotations.Test;
 import storm.benchmark.tools.FileReader;
 

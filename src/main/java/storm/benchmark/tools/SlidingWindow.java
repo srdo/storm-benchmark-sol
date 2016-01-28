@@ -19,7 +19,7 @@
 package storm.benchmark.tools;
 
 
-import backtype.storm.utils.MutableObject;
+import org.apache.storm.utils.MutableObject;
 import org.apache.log4j.Logger;
 import storm.benchmark.lib.reducer.Reducer;
 

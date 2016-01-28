@@ -50,10 +50,10 @@ public class RunnerTest {
             {"storm.benchmark.benchmarks.KafkaWordCount"},
             {"storm.benchmark.benchmarks.DRPC"},
             {"storm.benchmark.benchmarks.RollingCount"},
-            {"storm.benchmark.benchmarks.SOL"},
-            {"storm.benchmark.benchmarks.TridentWordCount"},
-            {"storm.benchmark.tools.producer.kafka.FileReadKafkaProducer"},
-            {"storm.benchmark.tools.producer.kafka.PageViewKafkaProducer"}
+            {"storm.benchmark.benchmarks.SOL"}
+//            {"storm.benchmark.benchmarks.TridentWordCount"}
+//            {"storm.benchmark.tools.producer.kafka.FileReadKafkaProducer"},
+//            {"storm.benchmark.tools.producer.kafka.PageViewKafkaProducer"}
     };
   }
 
