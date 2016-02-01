@@ -32,11 +32,9 @@ public class ConstBolt2 extends BaseRichBolt {
   private static final long serialVersionUID = -5313598399155365865L;
   public static final String FIELDS = "message";
   private OutputCollector collector;
-  private boolean ack;
 
-  public ConstBolt2(boolean ack) {
-    this.ack = ack;
-  }
+  public ConstBolt2()
+  { }
 
   @Override
   public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
@@ -45,12 +43,8 @@ public class ConstBolt2 extends BaseRichBolt {
 
   @Override
   public void execute(Tuple tuple) {
-    if(ack){
-//      collector.emit(tuple, new Values(tuple.getValue(0)));
-      collector.ack(tuple);
-    } else {
-      collector.emit(new Values(tuple.getValue(0)));
-    }
+    collector.ack(tuple);
+    collector.emit(new Values(tuple.getValue(0)));
   }
 
   @Override

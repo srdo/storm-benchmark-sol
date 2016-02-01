@@ -75,7 +75,7 @@ public class TSOL extends StormBenchmark {
     TridentTopology trident = new TridentTopology();
 
     trident.newStream("spout", spout).name("message").parallelismHint(spoutNum)
-            .shuffle()
+            .localOrShuffle()
             .each(new Fields("message"), new Const(), new Fields("word1"))
             .parallelismHint(boltNum)
             .each(new Fields("word1"), new Const(), new Fields("word2"))
