@@ -27,16 +27,21 @@
   <name>storm-benchmark</name>
 
   <properties>
-    <storm.version>1.0.0-SNAPSHOT</storm.version>
-    <curator.version>2.9.0</curator.version>
+    <storm.version>2.0.0-SNAPSHOT</storm.version>
+    <curator.version>2.10.0</curator.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-core</artifactId>
       <version>${storm.version}</version>
-      <scope>provided</scope>
     </dependency>
+<dependency>
+	<groupId>com.esotericsoftware</groupId>
+	<artifactId>kryo</artifactId>
+	<version>3.0.3</version>
+</dependency>
+
     <dependency>
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-hbase</artifactId>
