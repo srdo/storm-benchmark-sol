@@ -19,7 +19,10 @@
 package storm.benchmark.tools;
 
 import org.apache.storm.Config;
-import org.apache.storm.LocalCluster;
+import org.apache.storm.Testing;
+import org.apache.storm.testing.MkClusterParam;
+import org.apache.storm.ILocalCluster;
+import org.apache.storm.testing.TestJob;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
 import org.apache.storm.generated.InvalidTopologyException;
@@ -42,26 +45,30 @@ public class LocalRunner {
     run(args[0]);
   }
 
-  private static void run(String name)
+  private static void run(final String name)
           throws ClassNotFoundException, IllegalAccessException,
           InstantiationException, AlreadyAliveException, InvalidTopologyException {
     LOG.info("running benchmark " + name);
-    IBenchmark benchmark =  (IBenchmark) Runner.getApplicationFromName(PACKAGE + "." + name);
-    Config config = new Config();
+    final IBenchmark benchmark =  (IBenchmark) Runner.getApplicationFromName(PACKAGE + "." + name);
+    final Config config = new Config();
     config.putAll(Utils.readStormConfig());
-    config.setDebug(true);
-    StormTopology topology = benchmark.getTopology(config);
-    LocalCluster localCluster = new LocalCluster();
-    localCluster.submitTopology(name, config, topology);
-    final int runtime = BenchmarkUtils.getInt(config, MetricsCollectorConfig.METRICS_TOTAL_TIME,
-            MetricsCollectorConfig.DEFAULT_TOTAL_TIME);
-    IMetricsCollector collector = benchmark.getMetricsCollector(config, topology);
-    collector.run();
-    try {
-      Thread.sleep(runtime);
-    } catch (InterruptedException e) {
-      LOG.error("benchmark interrupted", e);
-    }
-    localCluster.shutdown();
+    config.setDebug(false);
+    final StormTopology topology = benchmark.getTopology(config);
+    MkClusterParam clusterParam = new MkClusterParam();
+    clusterParam.setNimbusDaemon(true);
+    Testing.withLocalCluster(clusterParam, new TestJob(){
+        @Override
+        public void run(ILocalCluster localCluster) throws Exception {
+          localCluster.submitTopology(name, config, topology);
+          final int runtime = BenchmarkUtils.getInt(config, MetricsCollectorConfig.METRICS_TOTAL_TIME,
+                  MetricsCollectorConfig.DEFAULT_TOTAL_TIME);
+          IMetricsCollector collector = benchmark.getMetricsCollector(config, topology);
+          collector.run();
+          try {
+            Thread.sleep(runtime);
+          } catch (InterruptedException e) {
+            LOG.error("benchmark interrupted", e);
+          }
+    }});
   }
 }

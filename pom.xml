@@ -37,6 +37,11 @@
       <version>${storm.version}</version>
     </dependency>
     <dependency>
+    <groupId>com.esotericsoftware</groupId>
+    <artifactId>kryo</artifactId>
+    <version>3.0.3</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.storm</groupId>
       <artifactId>storm-hbase</artifactId>
       <version>${storm.version}</version>
@@ -268,7 +273,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.4.0</version>
         <executions>
           <execution>
             <goals>
@@ -281,8 +286,11 @@
           <includeProjectDependencies>true</includeProjectDependencies>
           <includePluginDependencies>false</includePluginDependencies>
           <classpathScope>compile</classpathScope>
-          <mainClass>storm.benchmark.tools.LocalRunner</mainClass>
           <arguments>
+            <argument>-Dstorm.conf.file=${storm.conf.file}</argument>
+            <argument>-classpath</argument>
+            <classpath></classpath>
+            <argument>storm.benchmark.tools.LocalRunner</argument>
             <argument>${benchmark}</argument>
           </arguments>
         </configuration>
