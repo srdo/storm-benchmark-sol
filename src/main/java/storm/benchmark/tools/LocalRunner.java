@@ -64,11 +64,6 @@ public class LocalRunner {
                   MetricsCollectorConfig.DEFAULT_TOTAL_TIME);
           IMetricsCollector collector = benchmark.getMetricsCollector(config, topology);
           collector.run();
-          try {
-            Thread.sleep(runtime);
-          } catch (InterruptedException e) {
-            LOG.error("benchmark interrupted", e);
-          }
     }});
   }
 }

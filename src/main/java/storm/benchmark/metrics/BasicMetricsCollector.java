@@ -104,17 +104,17 @@ public class BasicMetricsCollector implements IMetricsCollector {
             MetricsCollectorConfig.CONF_FILE_FORMAT, path, name, now);
     final String dataFile = String.format(
             MetricsCollectorConfig.DATA_FILE_FORMAT, path, name, now);
-    PrintWriter confWriter = FileUtils.createFileWriter(path, confFile);
-    PrintWriter dataWriter = FileUtils.createFileWriter(path, dataFile);
+    try(PrintWriter confWriter = FileUtils.createFileWriter(path, confFile);
+    	    PrintWriter dataWriter = FileUtils.createFileWriter(path, dataFile)) {
     config.writeStormConfig(confWriter);
     writeHeader(dataWriter);
 
-    try {
+    try (NimbusClient nimbusClient = getNimbusClient(config.stormConfig)){
       boolean live = true;
       do {
-        Utils.sleep(config.pollInterval);
+        Thread.sleep(config.pollInterval);
         now = System.currentTimeMillis();
-        live = pollNimbus(getNimbusClient(config.stormConfig), now, state, dataWriter);
+        live = pollNimbus(nimbusClient.getClient(), now, state, dataWriter);
       } while (live && now < endTime);
     } catch (Exception e) {
       LOG.error("storm metrics failed! ", e);
@@ -122,10 +122,11 @@ public class BasicMetricsCollector implements IMetricsCollector {
       dataWriter.close();
       confWriter.close();
     }
+    	    }
   }
 
-  public Nimbus.Client getNimbusClient(Config stormConfig) {
-    return NimbusClient.getConfiguredClient(stormConfig).getClient();
+  public NimbusClient getNimbusClient(Config stormConfig) {
+    return NimbusClient.getConfiguredClient(stormConfig);
   }
 
 
